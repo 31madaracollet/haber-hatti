@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Hat — canlı haber akışı</title>
-<meta name="description" content="NTV, Hürriyet, BBC Türkçe, DW, Guardian, Al Jazeera, TRT Haber ve daha fazlasından gelen haberler tek hatta. Her 60 saniyede güncellenir.">
+<meta name="description" content="NTV, Hürriyet, BBC Türkçe, DW, Guardian, Al Jazeera, TRT Haber ve daha fazlasından gelen haberler tek hatta.">
 <meta name="color-scheme" content="light">
 <meta property="og:title" content="Hat — canlı haber akışı">
-<meta property="og:description" content="Onlarca kaynaktan gelen haberler tek hatta. Her 60 saniyede güncellenir.">
+<meta property="og:description" content="Onlarca kaynaktan gelen haberler tek hatta.">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2315171C'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23DE2A16'/%3E%3C/svg%3E">
 <style>
@@ -55,10 +55,7 @@
     scrollbar-width:thin;
   }
   .brand{display:flex;align-items:baseline;gap:9px}
-  .brand .mark{
-    font-family:var(--serif);font-size:29px;line-height:1;
-    letter-spacing:-.01em;
-  }
+  .brand .mark{font-family:var(--serif);font-size:29px;line-height:1;letter-spacing:-.01em}
   .brand .sub{font-size:11.5px;color:var(--rail-dim);letter-spacing:.02em}
 
   .clock{
@@ -75,12 +72,15 @@
   .cycle b{color:var(--rail-fg);font-weight:500}
 
   .live{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--rail-fg)}
-  .dot{width:7px;height:7px;border-radius:50%;background:var(--signal);flex:none;position:relative}
+  .dot{width:7px;height:7px;border-radius:50%;background:#3FBF6A;flex:none;position:relative}
+  .dot.off{background:var(--rail-dim)}
+  .dot.busy{background:#E0A716}
   .dot::after{
     content:"";position:absolute;inset:-4px;border-radius:50%;
-    border:1px solid var(--signal);opacity:.55;
+    border:1px solid currentColor;opacity:.55;
     animation:pulse 2.4s cubic-bezier(.4,0,.2,1) infinite;
   }
+  .dot.off::after{animation:none;opacity:0}
   @keyframes pulse{
     0%{transform:scale(.6);opacity:.7}
     70%{transform:scale(1.4);opacity:0}
@@ -122,23 +122,14 @@
   .health{font-size:11.5px;color:var(--rail-dim);display:flex;flex-direction:column;gap:7px}
   .bars{display:flex;gap:2px;flex-wrap:wrap}
   .bar{width:5px;height:15px;border-radius:1px;background:var(--rail-fg);opacity:.85;flex:none}
-  .bar.off{background:var(--rail-dim);opacity:.5}
-  .bar.load{background:var(--rail-dim);animation:blink 1s ease-in-out infinite}
-  @keyframes blink{50%{opacity:.25}}
+  .bar.off{background:var(--rail-dim);opacity:.45}
   .health .k{color:var(--rail-fg)}
 
   /* ---------- PAGE ---------- */
   .page{margin-left:232px;min-height:100vh;padding:0 0 80px}
 
-  .band{
-    border-bottom:1px solid var(--rule);
-    background:var(--paper);
-    position:sticky;top:0;z-index:30;
-  }
-  .band-in{
-    display:flex;align-items:center;gap:16px;
-    padding:0 34px;height:52px;overflow:hidden;
-  }
+  .band{border-bottom:1px solid var(--rule);background:var(--paper);position:sticky;top:0;z-index:30}
+  .band-in{display:flex;align-items:center;gap:16px;padding:0 34px;height:52px;overflow:hidden}
   .ticker{
     display:flex;gap:0;overflow-x:auto;scrollbar-width:none;
     flex:1;mask-image:linear-gradient(90deg,#000 92%,transparent);
@@ -162,10 +153,7 @@
     display:flex;align-items:flex-end;justify-content:space-between;gap:24px;
     flex-wrap:wrap;
   }
-  .head h1{
-    font-family:var(--serif);font-weight:400;
-    font-size:34px;line-height:1.1;letter-spacing:-.015em;
-  }
+  .head h1{font-family:var(--serif);font-weight:400;font-size:34px;line-height:1.1;letter-spacing:-.015em}
   .head .desc{font-size:14px;color:var(--ink-2);margin-top:7px;max-width:52ch}
   .head-actions{display:flex;align-items:center;gap:14px}
   .stamp{font-size:12.5px;color:var(--ink-3);text-align:right;line-height:1.35}
@@ -190,10 +178,8 @@
   }
   .lead.breaking{border-top:2px solid var(--signal);padding-top:15px}
   .lead.plain{grid-template-columns:1fr}
-  .lead .kicker{
-    font-size:12px;color:var(--signal);margin-bottom:12px;
-    display:flex;align-items:center;gap:7px;
-  }
+  .lead .kicker{font-size:12px;color:var(--signal);margin-bottom:12px;display:flex;align-items:center;gap:7px}
+  .lead .kicker .dot{background:var(--signal);color:var(--signal)}
   .lead h2{
     font-family:var(--serif);font-weight:400;
     font-size:clamp(28px,3.3vw,44px);line-height:1.14;letter-spacing:-.022em;
@@ -218,10 +204,7 @@
   .feed-head h3{font-size:13px;font-weight:500;color:var(--ink-2)}
   .feed-head span{font-size:12.5px;color:var(--ink-3)}
 
-  .feed{
-    list-style:none;max-width:1120px;margin:0;padding:10px 34px 0;
-    position:relative;
-  }
+  .feed{list-style:none;max-width:1120px;margin:0;padding:10px 34px 0;position:relative}
   .feed::before{
     content:"";position:absolute;left:calc(34px + var(--gutter));top:16px;bottom:34px;
     width:1px;background:var(--rule);
@@ -229,8 +212,7 @@
   .item{
     position:relative;
     display:grid;grid-template-columns:var(--gutter) 1fr;
-    gap:0;border-bottom:1px solid var(--rule);
-    padding:16px 0;
+    gap:0;border-bottom:1px solid var(--rule);padding:16px 0;
   }
   .item .time{
     font-size:13px;color:var(--ink-3);padding-top:2px;
@@ -240,10 +222,7 @@
   .item .body{display:flex;gap:20px;align-items:flex-start;padding-left:36px}
   .item .txt{flex:1;min-width:0}
   .item .src{font-size:12px;color:var(--ink-3);margin-top:6px;display:flex;align-items:center;gap:8px}
-  .item h4{
-    font-size:17.5px;font-weight:600;line-height:1.32;letter-spacing:-.012em;
-    text-wrap:pretty;
-  }
+  .item h4{font-size:17.5px;font-weight:600;line-height:1.32;letter-spacing:-.012em;text-wrap:pretty}
   .item h4:hover{text-decoration:underline;text-underline-offset:3px}
   .item p{
     font-size:14px;color:var(--ink-2);margin-top:6px;
@@ -269,7 +248,7 @@
   }
   .item.is-new .time b{color:var(--signal)}
   @keyframes settle{from{background:rgba(222,42,22,.075)}to{background:transparent}}
-  .item.is-new{animation:settle 6s ease-out forwards}
+  .item.is-new{animation:settle 8s ease-out forwards}
 
   .more{
     display:block;margin:26px 34px 0;max-width:1120px;
@@ -295,7 +274,7 @@
   }
   .empty h4,.err h4{font-size:16px;font-weight:600;margin-bottom:8px}
   .empty p,.err p{font-size:14px;color:var(--ink-2);max-width:66ch}
-  .err{border-style:solid;border-color:var(--signal)}
+  .err{border-style:solid}
   .err h4{color:var(--signal)}
   .err ul{margin:12px 0 0 18px;font-size:13.5px;color:var(--ink-2);line-height:1.7}
 
@@ -306,12 +285,10 @@
   }
   footer.note b{color:var(--ink-2);font-weight:500}
 
-  /* ---------- MOBILE ---------- */
   @media (max-width:900px){
     .rail{
       position:static;width:auto;flex-direction:row;flex-wrap:wrap;
-      align-items:center;gap:14px;padding:14px 16px;
-      inset:auto;
+      align-items:center;gap:14px;padding:14px 16px;inset:auto;
     }
     .rail .cycle,.rail .health,.rail .navlabel,.rail .spacer{display:none}
     .rail .clock{font-size:24px}
@@ -351,7 +328,7 @@
 
   <div class="clock" id="clock">--:--<span class="sec">--</span></div>
 
-  <div class="live"><span class="dot"></span><span id="liveText">yayında</span></div>
+  <div class="live"><span class="dot busy" id="liveDot"></span><span id="liveText">bağlanıyor</span></div>
 
   <div class="cycle">
     <svg class="ring" viewBox="0 0 36 36" aria-hidden="true">
@@ -359,7 +336,7 @@
       <circle class="val" id="ringVal" cx="18" cy="18" r="15.5"
               stroke-dasharray="97.4" stroke-dashoffset="0"></circle>
     </svg>
-    <span><b id="cdNum">60</b> sn sonra güncellenir</span>
+    <span><b id="cdNum">60</b> sn sonra kontrol edilir</span>
   </div>
 
   <div>
@@ -378,7 +355,7 @@
 
   <div class="health">
     <div class="bars" id="bars"></div>
-    <div><span class="k" id="healthText">—</span> kaynak yanıt veriyor</div>
+    <div><span class="k" id="healthText">—</span> kaynak yanıt verdi</div>
   </div>
 </aside>
 
@@ -396,7 +373,7 @@
     </div>
     <div class="head-actions">
       <div class="stamp">
-        <b id="lastUp">güncelleniyor…</b>
+        <b id="lastUp">yükleniyor…</b>
         <span id="counts">— haber · — kaynak</span>
       </div>
       <button class="refresh" id="refreshBtn">
@@ -419,9 +396,10 @@
   <div id="states"></div>
 
   <footer class="note">
-    <b>Hat</b> — RSS akışlarını tarayıcıdan doğrudan çeker; araya giren genel proxy servisleri
-    (allorigins, corsproxy.io, codetabs) üzerinden geçer. Kaynaklar kendi yayın akışlarının
-    sahibidir; başlıklar ve görseller ilgili yayıncıya aittir, bağlantılar doğrudan kaynağa gider.
+    <b>Hat</b> — akışlar GitHub Actions üzerinde sunucu tarafında derlenir ve
+    <b>feed.json</b> olarak bu sayfaya servis edilir. Sayfa bu dosyayı her 60 saniyede bir
+    yeniden kontrol eder; veri yaklaşık 5 dakikada bir tazelenir. Başlıklar ve görseller
+    ilgili yayıncıya aittir, bağlantılar doğrudan kaynağa gider.
   </footer>
 </main>
 
@@ -429,85 +407,11 @@
 (function(){
   'use strict';
 
-  /* ============ KAYNAKLAR ============ */
-  var GN = function(path){
-    return 'https://news.google.com/rss' + (path || '') + '?hl=tr&gl=TR&ceid=TR:tr';
-  };
-
-  var FEEDS = {
-    akis: [
-      GN(''),
-      GN('/headlines/section/topic/WORLD'),
-      GN('/headlines/section/topic/BUSINESS'),
-      GN('/headlines/section/topic/TECHNOLOGY'),
-      GN('/headlines/section/topic/SPORTS'),
-      GN('/headlines/section/topic/SCIENCE'),
-      'https://www.ntv.com.tr/son-dakika.rss',
-      'https://www.hurriyet.com.tr/rss/anasayfa',
-      'https://feeds.bbci.co.uk/turkce/rss.xml',
-      'https://www.trthaber.com/sondakika_articles.rss',
-      'https://www.cumhuriyet.com.tr/rss/son_dakika.xml',
-      'https://feeds.bbci.co.uk/news/world/rss.xml',
-      'https://www.aljazeera.com/xml/rss/all.xml',
-      'https://www.theguardian.com/world/rss',
-      'https://rss.dw.com/rdf/rss-tur-all',
-      'https://techcrunch.com/feed/'
-    ],
-    gundem: [
-      GN(''),
-      'https://www.ntv.com.tr/son-dakika.rss',
-      'https://www.hurriyet.com.tr/rss/gundem',
-      'https://www.trthaber.com/sondakika_articles.rss',
-      'https://www.cumhuriyet.com.tr/rss/son_dakika.xml',
-      'https://www.haberturk.com/rss',
-      'https://feeds.bbci.co.uk/turkce/rss.xml',
-      'https://www.aa.com.tr/tr/rss/default?cat=guncel'
-    ],
-    dunya: [
-      GN('/headlines/section/topic/WORLD'),
-      'https://feeds.bbci.co.uk/news/world/rss.xml',
-      'https://www.aljazeera.com/xml/rss/all.xml',
-      'https://www.theguardian.com/world/rss',
-      'https://rss.nytimes.com/services/xml/rss/nyt/World.xml',
-      'https://rss.dw.com/rdf/rss-tur-all',
-      'https://tr.euronews.com/rss'
-    ],
-    ekonomi: [
-      GN('/headlines/section/topic/BUSINESS'),
-      'https://www.ntv.com.tr/ekonomi.rss',
-      'https://www.hurriyet.com.tr/rss/ekonomi',
-      'https://www.bloomberght.com/rss',
-      'https://www.aa.com.tr/tr/rss/default?cat=ekonomi',
-      'https://www.theguardian.com/uk/business/rss'
-    ],
-    teknoloji: [
-      GN('/headlines/section/topic/TECHNOLOGY'),
-      'https://www.ntv.com.tr/teknoloji.rss',
-      'https://www.hurriyet.com.tr/rss/teknoloji',
-      'https://techcrunch.com/feed/',
-      'https://www.theverge.com/rss/index.xml',
-      'https://feeds.arstechnica.com/arstechnica/index',
-      'https://hnrss.org/frontpage'
-    ],
-    spor: [
-      GN('/headlines/section/topic/SPORTS'),
-      'https://www.ntv.com.tr/spor.rss',
-      'https://www.hurriyet.com.tr/rss/spor',
-      'https://www.espn.com/espn/rss/news'
-    ],
-    bilim: [
-      GN('/headlines/section/topic/SCIENCE'),
-      GN('/headlines/section/topic/HEALTH'),
-      'https://www.sciencedaily.com/rss/all.xml',
-      'https://phys.org/rss-feed/'
-    ],
-    kultur: [
-      GN('/headlines/section/topic/ENTERTAINMENT'),
-      'https://www.hurriyet.com.tr/rss/kultur-sanat',
-      'https://www.ntv.com.tr/kultur-sanat.rss',
-      'https://www.theguardian.com/culture/rss'
-    ]
-  };
+  var DATA_URL = 'feed.json';
+  var LIVE_FEED = 'https://news.google.com/rss?hl=tr&gl=TR&ceid=TR:tr';
+  var LIVE_PROXY = 'https://api.allorigins.win/raw?url=';
+  var POLL_MS = 60000;
+  var NEW_WINDOW_MS = 10 * 60 * 1000;
 
   var TABS = [
     {id:'akis',     name:'Akış',      desc:'Haber kaynaklarından gelen en yeni başlıklar, tek hatta.'},
@@ -520,388 +424,167 @@
     {id:'kultur',   name:'Kültür',    desc:'Sinema, müzik, sanat ve yaşam.'}
   ];
 
-  var NAMES = {
-    'news.google.com':null,
-    'www.ntv.com.tr':'NTV','ntv.com.tr':'NTV',
-    'www.hurriyet.com.tr':'Hürriyet',
-    'www.trthaber.com':'TRT Haber',
-    'www.cumhuriyet.com.tr':'Cumhuriyet',
-    'www.haberturk.com':'Habertürk',
-    'www.aa.com.tr':'Anadolu Ajansı',
-    'feeds.bbci.co.uk':'BBC',
-    'www.aljazeera.com':'Al Jazeera',
-    'www.theguardian.com':'The Guardian',
-    'rss.nytimes.com':'New York Times',
-    'rss.dw.com':'DW',
-    'tr.euronews.com':'Euronews',
-    'www.bloomberght.com':'Bloomberg HT',
-    'techcrunch.com':'TechCrunch',
-    'www.theverge.com':'The Verge',
-    'feeds.arstechnica.com':'Ars Technica',
-    'hnrss.org':'Hacker News',
-    'www.espn.com':'ESPN',
-    'www.sciencedaily.com':'ScienceDaily',
-    'phys.org':'Phys.org'
-  };
-
-  var FEED_LABEL = {};
-  Object.keys(FEEDS).forEach(function(k){
-    FEEDS[k].forEach(function(u){ FEED_LABEL[u] = labelOf(u); });
-  });
-
-  function labelOf(u){
-    try{
-      var h = new URL(u).hostname;
-      if(NAMES[h] !== undefined) return NAMES[h] || h.replace(/^www\./,'');
-      return h.replace(/^www\./,'');
-    }catch(e){ return 'kaynak'; }
-  }
-
-  /* ============ CORS PROXY ZİNCİRİ ============ */
-  var PROXIES = [
-    function(u){ return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u); },
-    function(u){ return 'https://corsproxy.io/?url=' + encodeURIComponent(u); },
-    function(u){ return 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u); },
-    function(u){ return 'https://api.allorigins.win/get?url=' + encodeURIComponent(u); }
-  ];
-
-  function fetchFeed(url){
-    var order = PROXIES.map(function(_,i){ return i; })
-      .sort(function(){ return Math.random() - 0.5; });
-    var lastErr = null;
-
-    function attempt(n){
-      if(n >= order.length) return Promise.reject(lastErr || new Error('proxy'));
-      var p = PROXIES[order[n]];
-      var ctrl = ('AbortController' in window) ? new AbortController() : null;
-      var timer = setTimeout(function(){ if(ctrl) ctrl.abort(); }, 13000);
-
-      return fetch(p(url), {
-        cache:'no-store',
-        signal: ctrl ? ctrl.signal : undefined
-      }).then(function(res){
-        clearTimeout(timer);
-        if(!res.ok) throw new Error('HTTP ' + res.status);
-        return res.text();
-      }).then(function(text){
-        if(!text || text.length < 100) throw new Error('boş yanıt');
-        if(text.charAt(0) === '{'){
-          try{
-            var j = JSON.parse(text);
-            if(j && j.contents) text = j.contents;
-          }catch(e){}
-        }
-        var doc = new DOMParser().parseFromString(text, 'text/xml');
-        if(doc.getElementsByTagName('parsererror').length) throw new Error('xml');
-        var n = doc.getElementsByTagName('item').length + doc.getElementsByTagName('entry').length;
-        if(!n) throw new Error('akış yok');
-        return doc;
-      }).catch(function(e){
-        clearTimeout(timer);
-        lastErr = e;
-        return attempt(n + 1);
-      });
-    }
-    return attempt(0);
-  }
-
-  /* ============ AYRIŞTIRMA ============ */
-  function txt(node, names){
-    for(var i=0;i<names.length;i++){
-      var el = node.getElementsByTagName(names[i])[0];
-      if(el && el.textContent && el.textContent.trim()) return el.textContent.trim();
-    }
-    return '';
-  }
-  function attrOf(node, names, attrs){
-    for(var i=0;i<names.length;i++){
-      var list = node.getElementsByTagName(names[i]);
-      for(var j=0;j<list.length;j++){
-        for(var k=0;k<attrs.length;k++){
-          var v = list[j].getAttribute(attrs[k]);
-          if(v) return v;
-        }
-      }
-    }
-    return '';
-  }
-  function abs(u, base){
-    if(!u) return '';
-    try{ return new URL(u, base).href; }catch(e){ return ''; }
-  }
-  function strip(html){
-    if(!html) return '';
-    var s = html.replace(/<[^>]*>/g,' ');
-    s = s.replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/&quot;/g,'"')
-         .replace(/&#39;|&apos;/g,"'").replace(/&lt;/g,'<').replace(/&gt;/g,'>')
-         .replace(/&#(\d+);/g, function(_,d){ return String.fromCharCode(+d); });
-    return s.replace(/\s+/g,' ').trim();
-  }
-  function getLink(item){
-    var links = item.getElementsByTagName('link');
-    for(var i=0;i<links.length;i++){
-      var rel = links[i].getAttribute('rel');
-      var h = links[i].getAttribute('href');
-      if(h && (!rel || rel === 'alternate')) return h;
-    }
-    for(var j=0;j<links.length;j++){
-      var t = links[j].textContent.trim();
-      if(t) return t;
-    }
-    var g = item.getElementsByTagName('guid')[0];
-    if(g && /^https?:/.test(g.textContent.trim())) return g.textContent.trim();
-    return '';
-  }
-  function getImage(item, base){
-    var enc = item.getElementsByTagName('enclosure');
-    for(var i=0;i<enc.length;i++){
-      var ty = enc[i].getAttribute('type') || '';
-      var u = enc[i].getAttribute('url');
-      if(u && (!ty || ty.indexOf('image') === 0)) return abs(u, base);
-    }
-    var m = attrOf(item, ['media:content','media:thumbnail','media:group'], ['url']);
-    if(m) return abs(m, base);
-    var html = txt(item,['content:encoded','description','summary','content','encoded']);
-    var mm = html.match(/<img[^>]+src=["']([^"']+)["']/i);
-    if(mm){
-      var src = mm[1];
-      if(/pixel|spacer|1x1|blank\.|transparent/i.test(src)) return '';
-      return abs(src, base);
-    }
-    return '';
-  }
-  function cleanTitle(t, sourceName){
-    t = t.replace(/\s+/g,' ').trim();
-    if(sourceName){
-      var suffix = ' - ' + sourceName;
-      if(t.slice(-suffix.length) === suffix) t = t.slice(0, -suffix.length);
-    }
-    return t;
-  }
-  function parseISO(s){
-    var d = new Date(s);
-    return isNaN(d.getTime()) ? null : d;
-  }
-
-  function parseFeed(doc, feedUrl){
-    var nodes = doc.getElementsByTagName('item');
-    if(!nodes.length) nodes = doc.getElementsByTagName('entry');
-
-    var channelTitle = '';
-    var ch = doc.getElementsByTagName('channel')[0];
-    if(ch){
-      var tn = ch.getElementsByTagName('title')[0];
-      if(tn) channelTitle = tn.textContent.trim();
-    }
-    var label = labelOf(feedUrl) || channelTitle || 'kaynak';
-    var isGoogle = feedUrl.indexOf('news.google.com') !== -1;
-    var out = [];
-
-    for(var i=0;i<nodes.length && i<40;i++){
-      var it = nodes[i];
-      var title = strip(txt(it,['title']));
-      if(!title) continue;
-
-      var srcEl = it.getElementsByTagName('source')[0];
-      var srcName = '';
-      if(srcEl){
-        srcName = srcEl.textContent.trim();
-        var srcUrl = srcEl.getAttribute('url');
-        if(!srcName && srcUrl) srcName = labelOf(srcUrl);
-      }
-      if(!srcName) srcName = isGoogle ? label : (label || channelTitle || 'kaynak');
-
-      title = cleanTitle(title, srcName);
-
-      var link = abs(getLink(it), feedUrl);
-      if(!link) continue;
-
-      var date = parseISO(txt(it,['pubDate','published','updated','dc:date','date'])) || new Date();
-      var raw = txt(it,['description','summary','content:encoded','content','encoded']);
-      var summary = strip(raw);
-      if(summary.length > 320) summary = summary.slice(0, 317).trim() + '…';
-
-      out.push({
-        title: title,
-        link: link,
-        source: srcName,
-        date: date,
-        image: getImage(it, feedUrl),
-        summary: summary,
-        feed: feedUrl
-      });
-    }
-    return out;
-  }
-
-  /* ============ DURUM ============ */
   var state = {
     tab: 'akis',
-    cache: {},
-    seen: {},
+    data: null,
+    live: [],
+    liveOk: false,
+    newAt: {},
+    everSeen: {},
+    firstDone: false,
     query: '',
     limit: 40,
     loading: false,
-    firstPaintDone: {}
+    error: null,
+    lastGen: null
   };
 
   var $ = function(id){ return document.getElementById(id); };
   var feedEl = $('feed'), tickerEl = $('ticker'), catsEl = $('cats');
 
-  function keyOf(it){
-    return (it.title || '').toLowerCase()
-      .replace(/[^a-z0-9çğıöşü ]/gi,'')
-      .replace(/\s+/g,' ')
-      .trim()
-      .slice(0,90);
+  function norm(t){
+    return String(t || '').toLowerCase()
+      .replace(/[^a-z0-9çğıöşü ]/g, '')
+      .replace(/\s+/g, ' ').trim().slice(0, 90);
   }
-
-  /* ============ YÜKLEME ============ */
-  var pool = function(items, limit, fn){
-    var q = items.slice();
-    var run = function(){
-      if(!q.length) return Promise.resolve();
-      var it = q.shift();
-      return Promise.resolve(fn(it)).catch(function(){}).then(run);
-    };
-    var ws = [];
-    for(var i=0;i<Math.min(limit, q.length);i++) ws.push(run());
-    return Promise.all(ws);
-  };
-
-  function load(tab){
-    var feeds = FEEDS[tab] || [];
-    var collected = [];
-    var ok = 0;
-    var done = 0;
-
-    var prev = state.cache[tab];
-    if(prev && prev.items) collected = collected.concat(prev.items);
-
-    paintBars(feeds, 0, feeds.length, 0);
-    if(!state.firstPaintDone[tab] && !prev) showSkeleton();
-
-    var jobs = feeds.map(function(u){
-      return function(){
-        return fetchFeed(u).then(function(doc){
-          var rows = parseFeed(doc, u);
-          ok++;
-          if(rows.length) collected = collected.concat(rows);
-          done++;
-          paintBars(feeds, ok, feeds.length, done);
-        }).catch(function(){
-          done++;
-          paintBars(feeds, ok, feeds.length, done);
-        });
-      };
-    });
-
-    return pool(jobs, 4, function(fn){ return fn(); }).then(function(){
-      var merged = dedupe(collected);
-      var seen = state.seen[tab] || {};
-      var first = !state.firstPaintDone[tab];
-
-      merged.forEach(function(it){
-        var k = keyOf(it);
-        it.k = k;
-        it.isNew = !first && !seen[k];
-        seen[k] = true;
-      });
-      state.seen[tab] = seen;
-
-      state.cache[tab] = {
-        items: merged.slice(0, 220),
-        ok: ok, total: feeds.length, at: new Date()
-      };
-      state.firstPaintDone[tab] = true;
-
-      if(state.tab === tab) render();
-    });
-  }
-
-  function dedupe(list){
-    var map = {};
-    var out = [];
-    list.forEach(function(it){
-      var k = keyOf(it);
-      if(!k) return;
-      var ex = map[k];
-      if(ex){
-        if(!ex.image && it.image) ex.image = it.image;
-        if(!ex.summary && it.summary) ex.summary = it.summary;
-        if(it.date > ex.date) ex.date = it.date;
-        return;
-      }
-      map[k] = it;
-      out.push(it);
-    });
-    out.sort(function(a,b){ return b.date - a.date; });
-    return out;
-  }
-
-  /* ============ ÇİZİM ============ */
   function esc(s){
-    return String(s||'').replace(/[&<>"']/g, function(c){
+    return String(s || '').replace(/[&<>"']/g, function(c){
       return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
     });
+  }
+  function toDate(v){
+    var d = new Date(v);
+    return isNaN(d.getTime()) ? new Date() : d;
   }
   function rel(d){
     var s = (Date.now() - d.getTime()) / 1000;
     if(s < 90) return 'şimdi';
-    if(s < 3600) return Math.floor(s/60) + ' dk';
-    if(s < 86400) return Math.floor(s/3600) + ' sa';
-    if(s < 604800) return Math.floor(s/86400) + ' gün';
+    if(s < 3600) return Math.floor(s / 60) + ' dk';
+    if(s < 86400) return Math.floor(s / 3600) + ' sa';
+    if(s < 604800) return Math.floor(s / 86400) + ' gün';
     return d.toLocaleDateString('tr-TR', {day:'numeric', month:'short'});
   }
   function hhmm(d){
     return d.toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'});
   }
 
+  /* ---------- VERİ ---------- */
+  function prep(raw){
+    var k = norm(raw.title);
+    return {
+      k: k,
+      title: raw.title,
+      link: raw.link,
+      source: raw.source || 'kaynak',
+      date: toDate(raw.date),
+      image: raw.image || '',
+      summary: raw.summary || '',
+      isNew: !!(state.newAt[k] && (Date.now() - state.newAt[k]) < NEW_WINDOW_MS)
+    };
+  }
+
+  function ingest(items){
+    items.forEach(function(it){
+      if(state.firstDone && !state.everSeen[it.k]) state.newAt[it.k] = Date.now();
+      state.everSeen[it.k] = true;
+    });
+  }
+
+  function itemsFor(tab){
+    if(!state.data || !state.data.sections) return [];
+    var base = (state.data.sections[tab] || []).slice();
+
+    if(tab === 'akis' && state.live.length){
+      var seen = {};
+      base.forEach(function(it){ seen[norm(it.title)] = 1; });
+      state.live.forEach(function(it){
+        if(!seen[norm(it.title)]) base.push(it);
+      });
+      base.sort(function(a, b){ return toDate(b.date) - toDate(a.date); });
+    }
+
+    var out = base.map(prep);
+    var dedup = {}, list = [];
+    out.forEach(function(it){
+      if(!it.k || dedup[it.k]) return;
+      dedup[it.k] = 1;
+      list.push(it);
+    });
+    return list;
+  }
+
+  function loadData(){
+    return fetch(DATA_URL + '?t=' + Date.now(), {cache:'no-store'})
+      .then(function(r){
+        if(!r.ok) throw new Error('feed.json okunamadı (HTTP ' + r.status + ')');
+        return r.json();
+      });
+  }
+
+  function loadLive(){
+    var url = LIVE_PROXY + encodeURIComponent(LIVE_FEED);
+    return fetch(url, {cache:'no-store'})
+      .then(function(r){
+        if(!r.ok) throw new Error('HTTP ' + r.status);
+        return r.text();
+      })
+      .then(function(text){
+        var doc = new DOMParser().parseFromString(text, 'text/xml');
+        var nodes = doc.getElementsByTagName('item');
+        var out = [];
+        for(var i = 0; i < nodes.length && i < 25; i++){
+          var it = nodes[i];
+          var titleEl = it.getElementsByTagName('title')[0];
+          var linkEl = it.getElementsByTagName('link')[0];
+          if(!titleEl || !linkEl) continue;
+          var srcEl = it.getElementsByTagName('source')[0];
+          var src = srcEl ? srcEl.textContent.trim() : 'Google Haberler';
+          var title = titleEl.textContent.trim();
+          if(src && title.slice(-(src.length + 3)) === ' - ' + src){
+            title = title.slice(0, -(src.length + 3));
+          }
+          var dateEl = it.getElementsByTagName('pubDate')[0];
+          out.push({
+            title: title,
+            link: linkEl.textContent.trim(),
+            source: src,
+            date: dateEl ? dateEl.textContent.trim() : new Date().toISOString(),
+            image: '',
+            summary: ''
+          });
+        }
+        state.live = out;
+        state.liveOk = out.length > 0;
+        return out;
+      });
+  }
+
+  /* ---------- ÇİZİM ---------- */
   function renderCats(){
-    var c = state.cache;
+    var secs = (state.data && state.data.sections) || {};
     catsEl.innerHTML = TABS.map(function(t){
-      var n = c[t.id] ? c[t.id].items.length : '';
-      return '<button class="cat" data-tab="' + t.id + '" aria-current="' +
-        (state.tab === t.id) + '"><span>' + t.name + '</span><span class="n">' +
-        (n || '') + '</span></button>';
+      var n = secs[t.id] ? secs[t.id].length : '';
+      return '<button class="cat" data-tab="' + t.id + '" aria-current="' + (state.tab === t.id) +
+        '"><span>' + t.name + '</span><span class="n">' + (n || '') + '</span></button>';
     }).join('');
   }
 
-  function paintBars(feeds, ok, total, done){
-    done = done || 0;
-    var html = '';
-    for(var i=0;i<total;i++){
-      var cls = i < done ? (i < ok ? 'bar' : 'bar off') : 'bar load';
-      html += '<span class="' + cls + '" title="' + esc(FEED_LABEL[feeds[i]] || '') + '"></span>';
-    }
-    $('bars').innerHTML = html;
-    $('healthText').textContent = ok + '/' + total;
-    var cc = state.cache[state.tab];
-    if(cc && done >= cc.total) $('healthText').textContent = cc.ok + '/' + cc.total;
-  }
-
-  function paintStaticBars(){
-    var feeds = FEEDS[state.tab] || [];
-    paintBars(feeds, 0, feeds.length, 0);
-  }
-
-  function currentItems(){
-    var c = state.cache[state.tab];
-    if(!c) return [];
-    var q = state.query.toLowerCase().trim();
-    if(!q) return c.items;
-    return c.items.filter(function(it){
-      return (it.title + ' ' + it.source + ' ' + it.summary).toLowerCase().indexOf(q) !== -1;
-    });
+  function renderHealth(){
+    if(!state.data || !state.data.health || !state.data.health[state.tab]) return;
+    var h = state.data.health[state.tab];
+    $('bars').innerHTML = (h.sources || []).map(function(s){
+      return '<span class="bar' + (s.ok ? '' : ' off') + '" title="' +
+        esc(s.name) + (s.ok ? ' · ' + (s.count || 0) + ' haber' : ' · yanıt yok') + '"></span>';
+    }).join('');
+    $('healthText').textContent = h.ok + '/' + h.total;
   }
 
   function renderTicker(items){
     var top = items.slice(0, 10);
     tickerEl.innerHTML = top.map(function(it){
-      return '<a class="tick' + (it.isNew ? ' new' : '') + '" href="' + esc(it.link) + '" target="_blank" rel="noopener">' +
-        '<span class="t">' + rel(it.date) + '</span>' +
-        '<span class="h">' + esc(it.title) + '</span>' +
-      '</a>';
+      return '<a class="tick' + (it.isNew ? ' new' : '') + '" href="' + esc(it.link) +
+        '" target="_blank" rel="noopener"><span class="t">' + rel(it.date) + '</span>' +
+        '<span class="h">' + esc(it.title) + '</span></a>';
     }).join('') || '<span class="tick"><span class="h">Yayın bekleniyor…</span></span>';
   }
 
@@ -914,23 +597,22 @@
     });
     var p = fresh.length ? fresh : items;
     var lead = null;
-    for(var i=0;i<Math.min(p.length, 14);i++){
+    for(var i = 0; i < Math.min(p.length, 14); i++){
       if(p[i].image){ lead = p[i]; break; }
     }
     if(!lead) lead = p[0];
 
-    var isBreaking = (Date.now() - lead.date.getTime()) < 20 * 60 * 1000;
+    var breaking = (Date.now() - lead.date.getTime()) < 20 * 60 * 1000;
     var hasImg = !!lead.image;
 
     wrap.innerHTML =
-      '<article class="lead' + (isBreaking ? ' breaking' : '') + (hasImg ? '' : ' plain') + '">' +
+      '<article class="lead' + (breaking ? ' breaking' : '') + (hasImg ? '' : ' plain') + '">' +
         '<div>' +
-          (isBreaking ? '<div class="kicker"><span class="dot"></span>Son dakika · ' + rel(lead.date) + '</div>' : '') +
+          (breaking ? '<div class="kicker"><span class="dot"></span>Son dakika · ' + rel(lead.date) + '</div>' : '') +
           '<a href="' + esc(lead.link) + '" target="_blank" rel="noopener"><h2>' + esc(lead.title) + '</h2></a>' +
           (lead.summary ? '<p class="sum">' + esc(lead.summary) + '</p>' : '') +
           '<div class="meta"><span class="src">' + esc(lead.source) + '</span>' +
-          '<span>' + hhmm(lead.date) + '</span>' +
-          '<span>' + rel(lead.date) + '</span></div>' +
+          '<span>' + hhmm(lead.date) + '</span><span>' + rel(lead.date) + '</span></div>' +
         '</div>' +
         (hasImg ? '<figure><img src="' + esc(lead.image) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentNode.style.display=\'none\'"></figure>' : '') +
       '</article>';
@@ -938,7 +620,7 @@
   }
 
   function render(){
-    var all = currentItems();
+    var all = itemsFor(state.tab);
     var lead = renderLead(all);
     renderTicker(all);
 
@@ -946,21 +628,20 @@
     var shown = list.slice(0, state.limit);
 
     $('feedHead').hidden = !shown.length;
-    $('feedCount').textContent = list.length + ' başlık' + (state.query ? ' · "' + state.query + '"' : '');
+    $('feedCount').textContent = list.length + ' başlık' +
+      (state.query ? ' · "' + state.query + '"' : '');
 
     feedEl.innerHTML = shown.map(function(it){
       return '<li class="item' + (it.isNew ? ' is-new' : '') + '">' +
         '<div class="time"><b>' + hhmm(it.date) + '</b>' + rel(it.date) + '</div>' +
-        '<div class="body">' +
-          '<div class="txt">' +
-            '<a href="' + esc(it.link) + '" target="_blank" rel="noopener"><h4>' + esc(it.title) + '</h4></a>' +
-            (it.summary && it.summary.length > 90 ? '<p>' + esc(it.summary) + '</p>' : '') +
-            '<div class="src"><span>' + esc(it.source) + '</span>' +
-            (it.isNew ? '<span class="tagnew">yeni</span>' : '') + '</div>' +
-          '</div>' +
-          (it.image ? '<img class="thumb" src="' + esc(it.image) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">' : '') +
+        '<div class="body"><div class="txt">' +
+          '<a href="' + esc(it.link) + '" target="_blank" rel="noopener"><h4>' + esc(it.title) + '</h4></a>' +
+          (it.summary && it.summary.length > 90 ? '<p>' + esc(it.summary) + '</p>' : '') +
+          '<div class="src"><span>' + esc(it.source) + '</span>' +
+          (it.isNew ? '<span class="tagnew">yeni</span>' : '') + '</div>' +
         '</div>' +
-      '</li>';
+        (it.image ? '<img class="thumb" src="' + esc(it.image) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">' : '') +
+        '</div></li>';
     }).join('');
 
     var mb = $('moreBtn');
@@ -973,56 +654,59 @@
     $('title').textContent = tab ? tab.name : 'Akış';
     $('desc').textContent = tab ? tab.desc : '';
 
-    var c = state.cache[state.tab];
+    if(state.data && state.data.generatedAt){
+      var g = toDate(state.data.generatedAt);
+      $('lastUp').textContent = 'veri: ' + hhmm(g) + ' · ' + rel(g);
+    }
+    var c = state.data && state.data.sections ? state.data.sections[state.tab] : null;
     if(c){
-      var srcCount = {};
-      c.items.forEach(function(it){ srcCount[it.source] = 1; });
-      $('counts').textContent = c.items.length + ' haber · ' +
-        Object.keys(srcCount).length + ' kaynak';
-      $('lastUp').textContent = 'son güncelleme ' + hhmm(c.at);
+      var srcs = {};
+      c.forEach(function(it){ srcs[it.source] = 1; });
+      $('counts').textContent = c.length + ' haber · ' + Object.keys(srcs).length + ' kaynak';
     }
 
     renderCats();
+    renderHealth();
 
     var st = $('states');
-    if(!all.length){
-      if(state.loading){
-        st.innerHTML = '';
-      } else if(!c || c.ok === 0){
-        st.innerHTML = '<div class="err"><h4>Hiçbir kaynağa ulaşılamadı</h4>' +
-          '<p>Tarayıcı haber kaynaklarına bağlanamadı. Bu genelde şu nedenlerden olur:</p>' +
-          '<ul><li>Sayfa çevrimdışı bir ortamda açık</li>' +
-          '<li>Araya giren proxy servisleri engellenmiş</li>' +
-          '<li>Kısa sürede çok istek atıldı ve geçici olarak sınırlandırıldı</li></ul>' +
-          '<p style="margin-top:12px">Birkaç saniye bekleyip <b>Yenile</b> düğmesine bas.</p></div>';
-      } else {
-        st.innerHTML = '<div class="empty"><h4>Bu bölümde başlık yok</h4>' +
-          '<p>Kaynaklar yanıt verdi ama bu bölüm için yeni başlık dönmedi. Başka bir bölüme geçmeyi ya da yenilemeyi dene.</p></div>';
-      }
-    } else if(!shown.length && state.query){
+    if(all.length){
+      st.innerHTML = '';
+    } else if(state.loading){
+      st.innerHTML = '';
+    } else if(state.query){
       st.innerHTML = '<div class="empty"><h4>"' + esc(state.query) + '" için sonuç yok</h4>' +
         '<p>Aramanı kısaltmayı ya da başka bir bölümde denemeyi dene.</p></div>';
+    } else if(state.error){
+      st.innerHTML = '<div class="err"><h4>Haber akışı yüklenemedi</h4>' +
+        '<p>' + esc(state.error) + '</p>' +
+        '<ul><li>Veri dosyası <b>feed.json</b> henüz üretilmemiş olabilir</li>' +
+        '<li>GitHub Actions işi ilk kez çalışıyorsa birkaç dakika sürebilir</li>' +
+        '<li>Sayfa çevrimdışı olabilir</li></ul>' +
+        '<p style="margin-top:12px">Birkaç saniye bekleyip <b>Yenile</b> düğmesine bas.</p></div>';
     } else {
-      st.innerHTML = '';
+      st.innerHTML = '<div class="empty"><h4>Bu bölümde başlık yok</h4>' +
+        '<p>Kaynaklar yanıt verdi ama bu bölüm için yeni başlık dönmedi.</p></div>';
     }
 
-    updateRing(60);
+    updateRing();
   }
 
   function showSkeleton(){
     var rows = '';
-    for(var i=0;i<6;i++){
+    for(var i = 0; i < 6; i++){
       rows += '<div class="row"><div class="b t"></div><div class="body"><div class="b"></div><div class="b s"></div></div></div>';
     }
     $('states').innerHTML = '<div class="sk">' + rows + '</div>';
   }
 
-  /* ============ SAYAÇ & SAAT ============ */
+  /* ---------- SAAT & SAYAÇ ---------- */
   var CIRC = 2 * Math.PI * 15.5;
-  function updateRing(sec){
-    var el = $('ringVal');
-    var frac = Math.max(0, Math.min(1, sec / 60));
-    el.setAttribute('stroke-dashoffset', String(CIRC * (1 - frac)));
+  var cycleStart = Date.now();
+
+  function updateRing(){
+    var left = Math.max(0, Math.ceil(POLL_MS / 1000 - (Date.now() - cycleStart) / 1000));
+    $('cdNum').textContent = left;
+    $('ringVal').setAttribute('stroke-dashoffset', String(CIRC * (1 - Math.min(1, left / (POLL_MS / 1000)))));
   }
   function tickClock(){
     var d = new Date();
@@ -1031,37 +715,82 @@
       '<span class="sec">' + p(d.getSeconds()) + '</span>';
   }
 
-  var cycleStart = Date.now();
   setInterval(function(){
-    var elapsed = (Date.now() - cycleStart) / 1000;
-    var left = Math.max(0, Math.ceil(60 - elapsed));
-    $('cdNum').textContent = left;
-    updateRing(left);
-    if(left <= 0){
+    tickClock();
+    updateRing();
+    if((Date.now() - cycleStart) >= POLL_MS){
       cycleStart = Date.now();
-      refresh(true);
+      poll(true);
     }
   }, 1000);
-
-  setInterval(tickClock, 1000);
   tickClock();
 
-  /* ============ OLAYLAR ============ */
-  function refresh(silent){
-    if(state.loading && silent) return;
-    state.loading = true;
-    var btn = $('refreshBtn');
-    btn.disabled = true; btn.classList.add('spin');
-    $('liveText').textContent = 'güncelleniyor';
-    $('lastUp').textContent = 'güncelleniyor…';
+  /* ---------- AKIŞ ---------- */
+  var firstPaint = true;
 
-    load(state.tab).then(function(){
+  function setLive(mode, text){
+    var d = $('liveDot');
+    d.className = 'dot' + (mode === 'ok' ? '' : mode === 'busy' ? ' busy' : ' off');
+    $('liveText').textContent = text;
+  }
+
+  function poll(silent){
+    if(state.loading) return Promise.resolve();
+    state.loading = true;
+    if(!silent){
+      $('refreshBtn').disabled = true;
+      $('refreshBtn').classList.add('spin');
+    }
+    setLive('busy', 'güncelleniyor');
+
+    var liveOnly = state.tab !== 'akis';
+
+    var dataPromise = liveOnly && state.data
+      ? Promise.resolve(null)
+      : loadData().catch(function(e){
+          state.error = firstPaint ? e.message : state.error;
+          return null;
+        });
+
+    return Promise.all([
+      dataPromise,
+      loadLive().catch(function(){ state.liveOk = false; return null; })
+    ]).then(function(res){
+      var fresh = res[0];
+      if(fresh){
+        state.error = null;
+        var changed = fresh.generatedAt !== state.lastGen;
+        state.data = fresh;
+        state.lastGen = fresh.generatedAt;
+        if(changed){
+          Object.keys(fresh.sections).forEach(function(sec){
+            ingest((fresh.sections[sec] || []).map(prep));
+          });
+        }
+      }
+
       state.loading = false;
-      btn.disabled = false; btn.classList.remove('spin');
-      $('liveText').textContent = 'yayında';
+      firstPaint = false;
+      state.firstDone = true;
+
+      if(!silent){
+        $('refreshBtn').disabled = false;
+        $('refreshBtn').classList.remove('spin');
+      }
+
+      var liveAge = 'canlı katman kapalı';
+      if(state.liveOk){
+        var newest = state.live.length ? toDate(state.live[0].date) : null;
+        liveAge = newest ? 'canlı · ' + rel(newest) : 'canlı katman açık';
+      }
+      setLive(state.liveOk ? 'ok' : 'off',
+        state.data ? (state.liveOk ? liveAge : 'veri akışı bağlı') : 'bağlantı yok');
+
+      render();
     });
   }
 
+  /* ---------- OLAYLAR ---------- */
   catsEl.addEventListener('click', function(e){
     var b = e.target.closest('.cat');
     if(!b) return;
@@ -1072,13 +801,14 @@
     state.query = '';
     $('q').value = '';
     window.scrollTo({top:0, behavior:'smooth'});
-    paintStaticBars();
-    renderCats();
-    if(state.cache[tab]) render();
-    else { showSkeleton(); refresh(true); }
+    render();
+    poll(true);
   });
 
-  $('refreshBtn').addEventListener('click', function(){ refresh(false); });
+  $('refreshBtn').addEventListener('click', function(){
+    cycleStart = Date.now();
+    poll(false);
+  });
 
   $('moreBtn').addEventListener('click', function(){
     state.limit += 40;
@@ -1099,34 +829,32 @@
   document.addEventListener('keydown', function(e){
     var tag = (e.target.tagName || '').toLowerCase();
     if(tag === 'input' || tag === 'textarea'){
-      if(e.key === 'Escape'){ $('q').value=''; state.query=''; render(); e.target.blur(); }
+      if(e.key === 'Escape'){ $('q').value = ''; state.query = ''; render(); e.target.blur(); }
       return;
     }
     if(e.key === '/'){ e.preventDefault(); $('q').focus(); return; }
-    if(e.key === 'r' || e.key === 'R'){ refresh(false); return; }
+    if(e.key === 'r' || e.key === 'R'){ cycleStart = Date.now(); poll(false); return; }
     var n = parseInt(e.key, 10);
     if(n >= 1 && n <= TABS.length){
-      state.tab = TABS[n-1].id;
+      state.tab = TABS[n - 1].id;
       state.limit = 40; state.query = ''; $('q').value = '';
-      paintStaticBars();
-      if(state.cache[state.tab]) render(); else { showSkeleton(); refresh(true); }
+      render();
+      poll(true);
     }
   });
 
   document.addEventListener('visibilitychange', function(){
     if(!document.hidden){
-      var c = state.cache[state.tab];
-      if(c && (Date.now() - c.at.getTime()) > 60000){ cycleStart = Date.now(); refresh(true); }
+      if((Date.now() - cycleStart) >= POLL_MS){ cycleStart = Date.now(); poll(true); }
       else render();
     }
   });
 
-  /* ============ BAŞLAT ============ */
+  /* ---------- BAŞLAT ---------- */
   renderCats();
-  paintStaticBars();
   showSkeleton();
   render();
-  refresh(true);
+  poll(false);
 })();
 </script>
 </body>

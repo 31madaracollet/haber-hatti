@@ -1,0 +1,49 @@
+name: Haber akışını güncelle
+
+on:
+  schedule:
+    # GitHub Actions'ın izin verdiği en kısa aralık: 5 dakika.
+    # Sayfa bu dosyayı her 60 saniyede bir yoklar.
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/build_feed.py'
+      - '.github/workflows/feed.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: feed-build
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Depoyu al
+        uses: actions/checkout@v4
+
+      - name: Python kur
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Akışı derle
+        run: python scripts/build_feed.py
+
+      - name: Değişiklik varsa gönder
+        run: |
+          git config user.name  "hat-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add feed.json
+          if git diff --staged --quiet; then
+            echo "İçerik değişmedi, commit atlanıyor."
+          else
+            git commit -m "feed: $(date -u '+%Y-%m-%d %H:%M') UTC"
+            git push
+          fi
