@@ -762,7 +762,7 @@
 
     return Promise.all([
       dataPromise,
-      loadLive().catch(function(){ state.liveOk = false; return null; })
+      loadLive().catch(function(){ state.live = []; state.liveOk = false; return null; })
     ]).then(function(res){
       var fresh = res[0];
       if(fresh){
