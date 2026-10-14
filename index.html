@@ -621,6 +621,14 @@
 
   function render(){
     var all = itemsFor(state.tab);
+
+    if(state.query){
+      var q = state.query.toLowerCase();
+      all = all.filter(function(it){
+        return (it.title + ' ' + it.source + ' ' + it.summary).toLowerCase().indexOf(q) !== -1;
+      });
+    }
+
     var lead = renderLead(all);
     renderTicker(all);
 
