@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hat — canlı haber akışı</title>
+<meta name="description" content="NTV, Hürriyet, BBC Türkçe, DW, Guardian, Al Jazeera, TRT Haber ve daha fazlasından gelen haberler tek hatta. Her 60 saniyede güncellenir.">
+<meta name="color-scheme" content="light">
+<meta property="og:title" content="Hat — canlı haber akışı">
+<meta property="og:description" content="Onlarca kaynaktan gelen haberler tek hatta. Her 60 saniyede güncellenir.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2315171C'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23DE2A16'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --paper:#F1EEE7;
+    --paper-2:#E5E1D7;
+    --ink:#15171C;
+    --ink-2:#4B5058;
+    --ink-3:#8B9099;
+    --rule:#D2CDBF;
+    --signal:#DE2A16;
+    --rail:#15171C;
+    --rail-2:#22252C;
+    --rail-fg:#EAE7DF;
+    --rail-dim:#5C6069;
+    --gutter:78px;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --serif:Georgia,"Times New Roman",Times,serif;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-size:16px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    font-variant-numeric:tabular-nums;
+  }
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--signal);color:#fff}
+  :focus-visible{outline:2px solid var(--signal);outline-offset:2px;border-radius:1px}
+
+  /* ---------- RAIL ---------- */
+  .rail{
+    position:fixed;inset:0 auto 0 0;width:232px;
+    background:var(--rail);color:var(--rail-fg);
+    display:flex;flex-direction:column;
+    padding:22px 18px 16px;
+    gap:20px;
+    z-index:40;
+    overflow-y:auto;
+    scrollbar-width:thin;
+  }
+  .brand{display:flex;align-items:baseline;gap:9px}
+  .brand .mark{
+    font-family:var(--serif);font-size:29px;line-height:1;
+    letter-spacing:-.01em;
+  }
+  .brand .sub{font-size:11.5px;color:var(--rail-dim);letter-spacing:.02em}
+
+  .clock{
+    font-size:38px;font-weight:600;letter-spacing:-.02em;line-height:1;
+    display:flex;align-items:baseline;gap:8px;
+  }
+  .clock .sec{font-size:15px;font-weight:400;color:var(--rail-dim);letter-spacing:0}
+
+  .cycle{display:flex;align-items:center;gap:11px;color:var(--rail-dim);font-size:12px}
+  .ring{width:30px;height:30px;transform:rotate(-90deg);flex:none}
+  .ring circle{fill:none;stroke-width:2.5}
+  .ring .track{stroke:#2C3037}
+  .ring .val{stroke:var(--rail-fg);stroke-linecap:round;transition:stroke-dashoffset .95s linear}
+  .cycle b{color:var(--rail-fg);font-weight:500}
+
+  .live{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--rail-fg)}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--signal);flex:none;position:relative}
+  .dot::after{
+    content:"";position:absolute;inset:-4px;border-radius:50%;
+    border:1px solid var(--signal);opacity:.55;
+    animation:pulse 2.4s cubic-bezier(.4,0,.2,1) infinite;
+  }
+  @keyframes pulse{
+    0%{transform:scale(.6);opacity:.7}
+    70%{transform:scale(1.4);opacity:0}
+    100%{opacity:0}
+  }
+
+  .navlabel{font-size:11px;color:var(--rail-dim);margin-bottom:2px}
+  .cats{display:flex;flex-direction:column;gap:1px}
+  .cat{
+    appearance:none;border:0;background:transparent;color:#9DA2AB;
+    font:inherit;font-size:14.5px;text-align:left;
+    padding:7px 10px 7px 12px;border-radius:3px;cursor:pointer;
+    display:flex;align-items:center;justify-content:space-between;gap:8px;
+    position:relative;transition:color .15s,background .15s;
+  }
+  .cat::before{
+    content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);
+    width:2px;height:0;background:var(--signal);transition:height .18s ease;
+  }
+  .cat:hover{color:var(--rail-fg);background:var(--rail-2)}
+  .cat[aria-current="true"]{color:#fff}
+  .cat[aria-current="true"]::before{height:15px}
+  .cat .n{font-size:11px;color:var(--rail-dim)}
+
+  .search{
+    display:flex;align-items:center;gap:8px;
+    background:var(--rail-2);border-radius:3px;padding:8px 10px;
+    border:1px solid transparent;transition:border-color .15s;
+  }
+  .search:focus-within{border-color:#3A3F48}
+  .search input{
+    background:transparent;border:0;outline:0;color:var(--rail-fg);
+    font:inherit;font-size:13.5px;width:100%;
+  }
+  .search input::placeholder{color:var(--rail-dim)}
+  .search svg{flex:none;opacity:.5}
+
+  .spacer{flex:1;min-height:8px}
+  .health{font-size:11.5px;color:var(--rail-dim);display:flex;flex-direction:column;gap:7px}
+  .bars{display:flex;gap:2px;flex-wrap:wrap}
+  .bar{width:5px;height:15px;border-radius:1px;background:var(--rail-fg);opacity:.85;flex:none}
+  .bar.off{background:var(--rail-dim);opacity:.5}
+  .bar.load{background:var(--rail-dim);animation:blink 1s ease-in-out infinite}
+  @keyframes blink{50%{opacity:.25}}
+  .health .k{color:var(--rail-fg)}
+
+  /* ---------- PAGE ---------- */
+  .page{margin-left:232px;min-height:100vh;padding:0 0 80px}
+
+  .band{
+    border-bottom:1px solid var(--rule);
+    background:var(--paper);
+    position:sticky;top:0;z-index:30;
+  }
+  .band-in{
+    display:flex;align-items:center;gap:16px;
+    padding:0 34px;height:52px;overflow:hidden;
+  }
+  .ticker{
+    display:flex;gap:0;overflow-x:auto;scrollbar-width:none;
+    flex:1;mask-image:linear-gradient(90deg,#000 92%,transparent);
+  }
+  .ticker::-webkit-scrollbar{display:none}
+  .tick{
+    display:flex;align-items:center;gap:9px;flex:none;
+    padding:0 18px;height:52px;
+    font-size:13.5px;white-space:nowrap;color:var(--ink-2);
+    border-right:1px solid var(--rule);
+    max-width:420px;overflow:hidden;
+  }
+  .tick:first-child{padding-left:0}
+  .tick .t{font-size:12px;color:var(--ink-3);font-weight:500}
+  .tick .h{overflow:hidden;text-overflow:ellipsis;color:var(--ink)}
+  .tick:hover .h{text-decoration:underline;text-underline-offset:3px}
+  .tick.new .t{color:var(--signal)}
+
+  .head{
+    padding:34px 34px 0;max-width:1120px;
+    display:flex;align-items:flex-end;justify-content:space-between;gap:24px;
+    flex-wrap:wrap;
+  }
+  .head h1{
+    font-family:var(--serif);font-weight:400;
+    font-size:34px;line-height:1.1;letter-spacing:-.015em;
+  }
+  .head .desc{font-size:14px;color:var(--ink-2);margin-top:7px;max-width:52ch}
+  .head-actions{display:flex;align-items:center;gap:14px}
+  .stamp{font-size:12.5px;color:var(--ink-3);text-align:right;line-height:1.35}
+  .stamp b{display:block;color:var(--ink-2);font-weight:500}
+  .refresh{
+    appearance:none;font:inherit;font-size:13.5px;cursor:pointer;
+    background:transparent;color:var(--ink);
+    border:1px solid var(--ink);border-radius:2px;
+    padding:9px 15px;display:flex;align-items:center;gap:8px;
+    transition:background .15s,color .15s;
+  }
+  .refresh:hover:not(:disabled){background:var(--ink);color:var(--paper)}
+  .refresh:disabled{opacity:.4;cursor:default}
+  .refresh svg{transition:transform .6s ease}
+  .refresh.spin svg{transform:rotate(360deg)}
+
+  /* ---------- LEAD ---------- */
+  .lead-wrap{padding:30px 34px 0;max-width:1120px}
+  .lead{
+    display:grid;grid-template-columns:1fr 340px;gap:36px;
+    padding-top:16px;border-top:1px solid var(--rule);
+  }
+  .lead.breaking{border-top:2px solid var(--signal);padding-top:15px}
+  .lead.plain{grid-template-columns:1fr}
+  .lead .kicker{
+    font-size:12px;color:var(--signal);margin-bottom:12px;
+    display:flex;align-items:center;gap:7px;
+  }
+  .lead h2{
+    font-family:var(--serif);font-weight:400;
+    font-size:clamp(28px,3.3vw,44px);line-height:1.14;letter-spacing:-.022em;
+    text-wrap:balance;
+  }
+  .lead h2:hover{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px}
+  .lead .sum{
+    font-size:15.5px;color:var(--ink-2);margin-top:16px;line-height:1.55;
+    display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+    max-width:64ch;
+  }
+  .lead .meta{margin-top:16px;font-size:13px;color:var(--ink-3);display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .lead .meta .src{color:var(--ink-2)}
+  .lead figure{overflow:hidden;background:var(--paper-2);aspect-ratio:4/3;border-radius:2px}
+  .lead figure img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.94)}
+
+  /* ---------- FEED ---------- */
+  .feed-head{
+    padding:44px 34px 0;max-width:1120px;
+    display:flex;align-items:baseline;justify-content:space-between;gap:16px;
+  }
+  .feed-head h3{font-size:13px;font-weight:500;color:var(--ink-2)}
+  .feed-head span{font-size:12.5px;color:var(--ink-3)}
+
+  .feed{
+    list-style:none;max-width:1120px;margin:0;padding:10px 34px 0;
+    position:relative;
+  }
+  .feed::before{
+    content:"";position:absolute;left:calc(34px + var(--gutter));top:16px;bottom:34px;
+    width:1px;background:var(--rule);
+  }
+  .item{
+    position:relative;
+    display:grid;grid-template-columns:var(--gutter) 1fr;
+    gap:0;border-bottom:1px solid var(--rule);
+    padding:16px 0;
+  }
+  .item .time{
+    font-size:13px;color:var(--ink-3);padding-top:2px;
+    padding-right:20px;text-align:right;line-height:1.35;
+  }
+  .item .time b{display:block;font-weight:500;color:var(--ink-2)}
+  .item .body{display:flex;gap:20px;align-items:flex-start;padding-left:36px}
+  .item .txt{flex:1;min-width:0}
+  .item .src{font-size:12px;color:var(--ink-3);margin-top:6px;display:flex;align-items:center;gap:8px}
+  .item h4{
+    font-size:17.5px;font-weight:600;line-height:1.32;letter-spacing:-.012em;
+    text-wrap:pretty;
+  }
+  .item h4:hover{text-decoration:underline;text-underline-offset:3px}
+  .item p{
+    font-size:14px;color:var(--ink-2);margin-top:6px;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+    max-width:70ch;
+  }
+  .item .thumb{
+    width:112px;height:74px;flex:none;object-fit:cover;background:var(--paper-2);
+    border-radius:2px;filter:saturate(.94);
+  }
+  .item::before{
+    content:"";position:absolute;left:calc(34px + var(--gutter) - 3px);top:22px;
+    width:7px;height:7px;border-radius:50%;
+    background:var(--paper);border:1px solid var(--rule);
+    box-sizing:content-box;
+  }
+  .item.is-new::before{background:var(--signal);border-color:var(--signal)}
+  .tagnew{
+    display:inline-flex;align-items:center;
+    font-size:10.5px;color:var(--signal);
+    border:1px solid var(--signal);border-radius:2px;
+    padding:0 5px;line-height:15px;flex:none;
+  }
+  .item.is-new .time b{color:var(--signal)}
+  @keyframes settle{from{background:rgba(222,42,22,.075)}to{background:transparent}}
+  .item.is-new{animation:settle 6s ease-out forwards}
+
+  .more{
+    display:block;margin:26px 34px 0;max-width:1120px;
+    appearance:none;font:inherit;font-size:13.5px;cursor:pointer;
+    background:transparent;border:1px solid var(--rule);border-radius:2px;
+    padding:11px 18px;color:var(--ink-2);width:calc(100% - 68px);
+    transition:border-color .15s,color .15s;
+  }
+  .more:hover{border-color:var(--ink);color:var(--ink)}
+
+  /* ---------- STATES ---------- */
+  .sk{max-width:1120px;padding:16px 34px}
+  .sk .row{display:grid;grid-template-columns:var(--gutter) 1fr;border-bottom:1px solid var(--rule);padding:16px 0}
+  .sk .b{height:15px;background:linear-gradient(90deg,var(--paper-2),#EFECE4,var(--paper-2));background-size:200% 100%;animation:sh 1.4s linear infinite;border-radius:2px}
+  .sk .b.s{width:44%;height:12px;margin-top:9px}
+  .sk .b.t{width:56px;height:12px;margin-left:auto;margin-right:20px}
+  .sk .body{padding-left:36px}
+  @keyframes sh{to{background-position:-200% 0}}
+
+  .empty,.err{
+    max-width:1120px;margin:20px 34px 0;padding:30px 26px;
+    border:1px dashed var(--rule);border-radius:3px;
+  }
+  .empty h4,.err h4{font-size:16px;font-weight:600;margin-bottom:8px}
+  .empty p,.err p{font-size:14px;color:var(--ink-2);max-width:66ch}
+  .err{border-style:solid;border-color:var(--signal)}
+  .err h4{color:var(--signal)}
+  .err ul{margin:12px 0 0 18px;font-size:13.5px;color:var(--ink-2);line-height:1.7}
+
+  footer.note{
+    max-width:1120px;padding:44px 34px 0;
+    font-size:12.5px;color:var(--ink-3);line-height:1.7;
+    border-top:1px solid var(--rule);margin-top:44px;
+  }
+  footer.note b{color:var(--ink-2);font-weight:500}
+
+  /* ---------- MOBILE ---------- */
+  @media (max-width:900px){
+    .rail{
+      position:static;width:auto;flex-direction:row;flex-wrap:wrap;
+      align-items:center;gap:14px;padding:14px 16px;
+      inset:auto;
+    }
+    .rail .cycle,.rail .health,.rail .navlabel,.rail .spacer{display:none}
+    .rail .clock{font-size:24px}
+    .cats{flex-direction:row;overflow-x:auto;gap:6px;width:100%;padding-bottom:2px}
+    .cat{white-space:nowrap;padding:6px 12px;background:var(--rail-2)}
+    .cat .n{display:none}
+    .cat::before{display:none}
+    .cat[aria-current="true"]{background:var(--signal);color:#fff}
+    .search{flex:1;min-width:170px}
+    .page{margin-left:0}
+    .head,.lead-wrap,.feed-head,.feed,.sk,.empty,.err,footer.note{padding-left:18px;padding-right:18px}
+    .feed::before{left:calc(18px + 54px)}
+    .item{grid-template-columns:54px 1fr}
+    .item .time{padding-right:12px;font-size:12px}
+    .item .body{padding-left:26px;gap:14px}
+    .item::before{left:calc(18px + 54px - 3px)}
+    .item .thumb{width:84px;height:58px}
+    .lead{grid-template-columns:1fr;gap:22px}
+    .lead figure{order:-1;aspect-ratio:16/9}
+    .head h1{font-size:26px}
+    .more{width:100%;margin-left:0;margin-right:0}
+    .band-in{padding:0 18px;height:46px}
+    .tick{height:46px;padding:0 14px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
+  }
+</style>
+</head>
+<body>
+
+<aside class="rail">
+  <div class="brand">
+    <span class="mark">Hat</span>
+    <span class="sub">canlı haber hattı</span>
+  </div>
+
+  <div class="clock" id="clock">--:--<span class="sec">--</span></div>
+
+  <div class="live"><span class="dot"></span><span id="liveText">yayında</span></div>
+
+  <div class="cycle">
+    <svg class="ring" viewBox="0 0 36 36" aria-hidden="true">
+      <circle class="track" cx="18" cy="18" r="15.5"></circle>
+      <circle class="val" id="ringVal" cx="18" cy="18" r="15.5"
+              stroke-dasharray="97.4" stroke-dashoffset="0"></circle>
+    </svg>
+    <span><b id="cdNum">60</b> sn sonra güncellenir</span>
+  </div>
+
+  <div>
+    <div class="navlabel">Bölümler</div>
+    <nav class="cats" id="cats" aria-label="Haber bölümleri"></nav>
+  </div>
+
+  <label class="search">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+      <circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path>
+    </svg>
+    <input id="q" type="search" placeholder="Haberlerde ara" aria-label="Haberlerde ara">
+  </label>
+
+  <div class="spacer"></div>
+
+  <div class="health">
+    <div class="bars" id="bars"></div>
+    <div><span class="k" id="healthText">—</span> kaynak yanıt veriyor</div>
+  </div>
+</aside>
+
+<main class="page">
+  <div class="band">
+    <div class="band-in">
+      <div class="ticker" id="ticker"></div>
+    </div>
+  </div>
+
+  <header class="head">
+    <div>
+      <h1 id="title">Akış</h1>
+      <p class="desc" id="desc">Haber kaynaklarından gelen en yeni başlıklar, tek hatta.</p>
+    </div>
+    <div class="head-actions">
+      <div class="stamp">
+        <b id="lastUp">güncelleniyor…</b>
+        <span id="counts">— haber · — kaynak</span>
+      </div>
+      <button class="refresh" id="refreshBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+          <path d="M21 12a9 9 0 1 1-2.64-6.36"></path><path d="M21 4v5h-5"></path>
+        </svg>
+        Yenile
+      </button>
+    </div>
+  </header>
+
+  <section class="lead-wrap" id="leadWrap"></section>
+
+  <div class="feed-head" id="feedHead" hidden>
+    <h3>Hat</h3><span id="feedCount"></span>
+  </div>
+
+  <ol class="feed" id="feed"></ol>
+  <button class="more" id="moreBtn" hidden></button>
+  <div id="states"></div>
+
+  <footer class="note">
+    <b>Hat</b> — RSS akışlarını tarayıcıdan doğrudan çeker; araya giren genel proxy servisleri
+    (allorigins, corsproxy.io, codetabs) üzerinden geçer. Kaynaklar kendi yayın akışlarının
+    sahibidir; başlıklar ve görseller ilgili yayıncıya aittir, bağlantılar doğrudan kaynağa gider.
+  </footer>
+</main>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ============ KAYNAKLAR ============ */
+  var GN = function(path){
+    return 'https://news.google.com/rss' + (path || '') + '?hl=tr&gl=TR&ceid=TR:tr';
+  };
+
+  var FEEDS = {
+    akis: [
+      GN(''),
+      GN('/headlines/section/topic/WORLD'),
+      GN('/headlines/section/topic/BUSINESS'),
+      GN('/headlines/section/topic/TECHNOLOGY'),
+      GN('/headlines/section/topic/SPORTS'),
+      GN('/headlines/section/topic/SCIENCE'),
+      'https://www.ntv.com.tr/son-dakika.rss',
+      'https://www.hurriyet.com.tr/rss/anasayfa',
+      'https://feeds.bbci.co.uk/turkce/rss.xml',
+      'https://www.trthaber.com/sondakika_articles.rss',
+      'https://www.cumhuriyet.com.tr/rss/son_dakika.xml',
+      'https://feeds.bbci.co.uk/news/world/rss.xml',
+      'https://www.aljazeera.com/xml/rss/all.xml',
+      'https://www.theguardian.com/world/rss',
+      'https://rss.dw.com/rdf/rss-tur-all',
+      'https://techcrunch.com/feed/'
+    ],
+    gundem: [
+      GN(''),
+      'https://www.ntv.com.tr/son-dakika.rss',
+      'https://www.hurriyet.com.tr/rss/gundem',
+      'https://www.trthaber.com/sondakika_articles.rss',
+      'https://www.cumhuriyet.com.tr/rss/son_dakika.xml',
+      'https://www.haberturk.com/rss',
+      'https://feeds.bbci.co.uk/turkce/rss.xml',
+      'https://www.aa.com.tr/tr/rss/default?cat=guncel'
+    ],
+    dunya: [
+      GN('/headlines/section/topic/WORLD'),
+      'https://feeds.bbci.co.uk/news/world/rss.xml',
+      'https://www.aljazeera.com/xml/rss/all.xml',
+      'https://www.theguardian.com/world/rss',
+      'https://rss.nytimes.com/services/xml/rss/nyt/World.xml',
+      'https://rss.dw.com/rdf/rss-tur-all',
+      'https://tr.euronews.com/rss'
+    ],
+    ekonomi: [
+      GN('/headlines/section/topic/BUSINESS'),
+      'https://www.ntv.com.tr/ekonomi.rss',
+      'https://www.hurriyet.com.tr/rss/ekonomi',
+      'https://www.bloomberght.com/rss',
+      'https://www.aa.com.tr/tr/rss/default?cat=ekonomi',
+      'https://www.theguardian.com/uk/business/rss'
+    ],
+    teknoloji: [
+      GN('/headlines/section/topic/TECHNOLOGY'),
+      'https://www.ntv.com.tr/teknoloji.rss',
+      'https://www.hurriyet.com.tr/rss/teknoloji',
+      'https://techcrunch.com/feed/',
+      'https://www.theverge.com/rss/index.xml',
+      'https://feeds.arstechnica.com/arstechnica/index',
+      'https://hnrss.org/frontpage'
+    ],
+    spor: [
+      GN('/headlines/section/topic/SPORTS'),
+      'https://www.ntv.com.tr/spor.rss',
+      'https://www.hurriyet.com.tr/rss/spor',
+      'https://www.espn.com/espn/rss/news'
+    ],
+    bilim: [
+      GN('/headlines/section/topic/SCIENCE'),
+      GN('/headlines/section/topic/HEALTH'),
+      'https://www.sciencedaily.com/rss/all.xml',
+      'https://phys.org/rss-feed/'
+    ],
+    kultur: [
+      GN('/headlines/section/topic/ENTERTAINMENT'),
+      'https://www.hurriyet.com.tr/rss/kultur-sanat',
+      'https://www.ntv.com.tr/kultur-sanat.rss',
+      'https://www.theguardian.com/culture/rss'
+    ]
+  };
+
+  var TABS = [
+    {id:'akis',     name:'Akış',      desc:'Haber kaynaklarından gelen en yeni başlıklar, tek hatta.'},
+    {id:'gundem',   name:'Gündem',    desc:'Türkiye gündeminden son gelişmeler.'},
+    {id:'dunya',    name:'Dünya',     desc:'Uluslararası ajanslar ve gazetelerden dünya gündemi.'},
+    {id:'ekonomi',  name:'Ekonomi',   desc:'Piyasalar, şirketler ve makro ekonomi.'},
+    {id:'teknoloji',name:'Teknoloji', desc:'Yapay zekâ, donanım, yazılım ve internet kültürü.'},
+    {id:'spor',     name:'Spor',      desc:'Maçlar, transferler ve turnuvalar.'},
+    {id:'bilim',    name:'Bilim',     desc:'Araştırma, uzay, sağlık ve çevre.'},
+    {id:'kultur',   name:'Kültür',    desc:'Sinema, müzik, sanat ve yaşam.'}
+  ];
+
+  var NAMES = {
+    'news.google.com':null,
+    'www.ntv.com.tr':'NTV','ntv.com.tr':'NTV',
+    'www.hurriyet.com.tr':'Hürriyet',
+    'www.trthaber.com':'TRT Haber',
+    'www.cumhuriyet.com.tr':'Cumhuriyet',
+    'www.haberturk.com':'Habertürk',
+    'www.aa.com.tr':'Anadolu Ajansı',
+    'feeds.bbci.co.uk':'BBC',
+    'www.aljazeera.com':'Al Jazeera',
+    'www.theguardian.com':'The Guardian',
+    'rss.nytimes.com':'New York Times',
+    'rss.dw.com':'DW',
+    'tr.euronews.com':'Euronews',
+    'www.bloomberght.com':'Bloomberg HT',
+    'techcrunch.com':'TechCrunch',
+    'www.theverge.com':'The Verge',
+    'feeds.arstechnica.com':'Ars Technica',
+    'hnrss.org':'Hacker News',
+    'www.espn.com':'ESPN',
+    'www.sciencedaily.com':'ScienceDaily',
+    'phys.org':'Phys.org'
+  };
+
+  var FEED_LABEL = {};
+  Object.keys(FEEDS).forEach(function(k){
+    FEEDS[k].forEach(function(u){ FEED_LABEL[u] = labelOf(u); });
+  });
+
+  function labelOf(u){
+    try{
+      var h = new URL(u).hostname;
+      if(NAMES[h] !== undefined) return NAMES[h] || h.replace(/^www\./,'');
+      return h.replace(/^www\./,'');
+    }catch(e){ return 'kaynak'; }
+  }
+
+  /* ============ CORS PROXY ZİNCİRİ ============ */
+  var PROXIES = [
+    function(u){ return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u); },
+    function(u){ return 'https://corsproxy.io/?url=' + encodeURIComponent(u); },
+    function(u){ return 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u); },
+    function(u){ return 'https://api.allorigins.win/get?url=' + encodeURIComponent(u); }
+  ];
+
+  function fetchFeed(url){
+    var order = PROXIES.map(function(_,i){ return i; })
+      .sort(function(){ return Math.random() - 0.5; });
+    var lastErr = null;
+
+    function attempt(n){
+      if(n >= order.length) return Promise.reject(lastErr || new Error('proxy'));
+      var p = PROXIES[order[n]];
+      var ctrl = ('AbortController' in window) ? new AbortController() : null;
+      var timer = setTimeout(function(){ if(ctrl) ctrl.abort(); }, 13000);
+
+      return fetch(p(url), {
+        cache:'no-store',
+        signal: ctrl ? ctrl.signal : undefined
+      }).then(function(res){
+        clearTimeout(timer);
+        if(!res.ok) throw new Error('HTTP ' + res.status);
+        return res.text();
+      }).then(function(text){
+        if(!text || text.length < 100) throw new Error('boş yanıt');
+        if(text.charAt(0) === '{'){
+          try{
+            var j = JSON.parse(text);
+            if(j && j.contents) text = j.contents;
+          }catch(e){}
+        }
+        var doc = new DOMParser().parseFromString(text, 'text/xml');
+        if(doc.getElementsByTagName('parsererror').length) throw new Error('xml');
+        var n = doc.getElementsByTagName('item').length + doc.getElementsByTagName('entry').length;
+        if(!n) throw new Error('akış yok');
+        return doc;
+      }).catch(function(e){
+        clearTimeout(timer);
+        lastErr = e;
+        return attempt(n + 1);
+      });
+    }
+    return attempt(0);
+  }
+
+  /* ============ AYRIŞTIRMA ============ */
+  function txt(node, names){
+    for(var i=0;i<names.length;i++){
+      var el = node.getElementsByTagName(names[i])[0];
+      if(el && el.textContent && el.textContent.trim()) return el.textContent.trim();
+    }
+    return '';
+  }
+  function attrOf(node, names, attrs){
+    for(var i=0;i<names.length;i++){
+      var list = node.getElementsByTagName(names[i]);
+      for(var j=0;j<list.length;j++){
+        for(var k=0;k<attrs.length;k++){
+          var v = list[j].getAttribute(attrs[k]);
+          if(v) return v;
+        }
+      }
+    }
+    return '';
+  }
+  function abs(u, base){
+    if(!u) return '';
+    try{ return new URL(u, base).href; }catch(e){ return ''; }
+  }
+  function strip(html){
+    if(!html) return '';
+    var s = html.replace(/<[^>]*>/g,' ');
+    s = s.replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/&quot;/g,'"')
+         .replace(/&#39;|&apos;/g,"'").replace(/&lt;/g,'<').replace(/&gt;/g,'>')
+         .replace(/&#(\d+);/g, function(_,d){ return String.fromCharCode(+d); });
+    return s.replace(/\s+/g,' ').trim();
+  }
+  function getLink(item){
+    var links = item.getElementsByTagName('link');
+    for(var i=0;i<links.length;i++){
+      var rel = links[i].getAttribute('rel');
+      var h = links[i].getAttribute('href');
+      if(h && (!rel || rel === 'alternate')) return h;
+    }
+    for(var j=0;j<links.length;j++){
+      var t = links[j].textContent.trim();
+      if(t) return t;
+    }
+    var g = item.getElementsByTagName('guid')[0];
+    if(g && /^https?:/.test(g.textContent.trim())) return g.textContent.trim();
+    return '';
+  }
+  function getImage(item, base){
+    var enc = item.getElementsByTagName('enclosure');
+    for(var i=0;i<enc.length;i++){
+      var ty = enc[i].getAttribute('type') || '';
+      var u = enc[i].getAttribute('url');
+      if(u && (!ty || ty.indexOf('image') === 0)) return abs(u, base);
+    }
+    var m = attrOf(item, ['media:content','media:thumbnail','media:group'], ['url']);
+    if(m) return abs(m, base);
+    var html = txt(item,['content:encoded','description','summary','content','encoded']);
+    var mm = html.match(/<img[^>]+src=["']([^"']+)["']/i);
+    if(mm){
+      var src = mm[1];
+      if(/pixel|spacer|1x1|blank\.|transparent/i.test(src)) return '';
+      return abs(src, base);
+    }
+    return '';
+  }
+  function cleanTitle(t, sourceName){
+    t = t.replace(/\s+/g,' ').trim();
+    if(sourceName){
+      var suffix = ' - ' + sourceName;
+      if(t.slice(-suffix.length) === suffix) t = t.slice(0, -suffix.length);
+    }
+    return t;
+  }
+  function parseISO(s){
+    var d = new Date(s);
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  function parseFeed(doc, feedUrl){
+    var nodes = doc.getElementsByTagName('item');
+    if(!nodes.length) nodes = doc.getElementsByTagName('entry');
+
+    var channelTitle = '';
+    var ch = doc.getElementsByTagName('channel')[0];
+    if(ch){
+      var tn = ch.getElementsByTagName('title')[0];
+      if(tn) channelTitle = tn.textContent.trim();
+    }
+    var label = labelOf(feedUrl) || channelTitle || 'kaynak';
+    var isGoogle = feedUrl.indexOf('news.google.com') !== -1;
+    var out = [];
+
+    for(var i=0;i<nodes.length && i<40;i++){
+      var it = nodes[i];
+      var title = strip(txt(it,['title']));
+      if(!title) continue;
+
+      var srcEl = it.getElementsByTagName('source')[0];
+      var srcName = '';
+      if(srcEl){
+        srcName = srcEl.textContent.trim();
+        var srcUrl = srcEl.getAttribute('url');
+        if(!srcName && srcUrl) srcName = labelOf(srcUrl);
+      }
+      if(!srcName) srcName = isGoogle ? label : (label || channelTitle || 'kaynak');
+
+      title = cleanTitle(title, srcName);
+
+      var link = abs(getLink(it), feedUrl);
+      if(!link) continue;
+
+      var date = parseISO(txt(it,['pubDate','published','updated','dc:date','date'])) || new Date();
+      var raw = txt(it,['description','summary','content:encoded','content','encoded']);
+      var summary = strip(raw);
+      if(summary.length > 320) summary = summary.slice(0, 317).trim() + '…';
+
+      out.push({
+        title: title,
+        link: link,
+        source: srcName,
+        date: date,
+        image: getImage(it, feedUrl),
+        summary: summary,
+        feed: feedUrl
+      });
+    }
+    return out;
+  }
+
+  /* ============ DURUM ============ */
+  var state = {
+    tab: 'akis',
+    cache: {},
+    seen: {},
+    query: '',
+    limit: 40,
+    loading: false,
+    firstPaintDone: {}
+  };
+
+  var $ = function(id){ return document.getElementById(id); };
+  var feedEl = $('feed'), tickerEl = $('ticker'), catsEl = $('cats');
+
+  function keyOf(it){
+    return (it.title || '').toLowerCase()
+      .replace(/[^a-z0-9çğıöşü ]/gi,'')
+      .replace(/\s+/g,' ')
+      .trim()
+      .slice(0,90);
+  }
+
+  /* ============ YÜKLEME ============ */
+  var pool = function(items, limit, fn){
+    var q = items.slice();
+    var run = function(){
+      if(!q.length) return Promise.resolve();
+      var it = q.shift();
+      return Promise.resolve(fn(it)).catch(function(){}).then(run);
+    };
+    var ws = [];
+    for(var i=0;i<Math.min(limit, q.length);i++) ws.push(run());
+    return Promise.all(ws);
+  };
+
+  function load(tab){
+    var feeds = FEEDS[tab] || [];
+    var collected = [];
+    var ok = 0;
+    var done = 0;
+
+    var prev = state.cache[tab];
+    if(prev && prev.items) collected = collected.concat(prev.items);
+
+    paintBars(feeds, 0, feeds.length, 0);
+    if(!state.firstPaintDone[tab] && !prev) showSkeleton();
+
+    var jobs = feeds.map(function(u){
+      return function(){
+        return fetchFeed(u).then(function(doc){
+          var rows = parseFeed(doc, u);
+          ok++;
+          if(rows.length) collected = collected.concat(rows);
+          done++;
+          paintBars(feeds, ok, feeds.length, done);
+        }).catch(function(){
+          done++;
+          paintBars(feeds, ok, feeds.length, done);
+        });
+      };
+    });
+
+    return pool(jobs, 4, function(fn){ return fn(); }).then(function(){
+      var merged = dedupe(collected);
+      var seen = state.seen[tab] || {};
+      var first = !state.firstPaintDone[tab];
+
+      merged.forEach(function(it){
+        var k = keyOf(it);
+        it.k = k;
+        it.isNew = !first && !seen[k];
+        seen[k] = true;
+      });
+      state.seen[tab] = seen;
+
+      state.cache[tab] = {
+        items: merged.slice(0, 220),
+        ok: ok, total: feeds.length, at: new Date()
+      };
+      state.firstPaintDone[tab] = true;
+
+      if(state.tab === tab) render();
+    });
+  }
+
+  function dedupe(list){
+    var map = {};
+    var out = [];
+    list.forEach(function(it){
+      var k = keyOf(it);
+      if(!k) return;
+      var ex = map[k];
+      if(ex){
+        if(!ex.image && it.image) ex.image = it.image;
+        if(!ex.summary && it.summary) ex.summary = it.summary;
+        if(it.date > ex.date) ex.date = it.date;
+        return;
+      }
+      map[k] = it;
+      out.push(it);
+    });
+    out.sort(function(a,b){ return b.date - a.date; });
+    return out;
+  }
+
+  /* ============ ÇİZİM ============ */
+  function esc(s){
+    return String(s||'').replace(/[&<>"']/g, function(c){
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
+    });
+  }
+  function rel(d){
+    var s = (Date.now() - d.getTime()) / 1000;
+    if(s < 90) return 'şimdi';
+    if(s < 3600) return Math.floor(s/60) + ' dk';
+    if(s < 86400) return Math.floor(s/3600) + ' sa';
+    if(s < 604800) return Math.floor(s/86400) + ' gün';
+    return d.toLocaleDateString('tr-TR', {day:'numeric', month:'short'});
+  }
+  function hhmm(d){
+    return d.toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'});
+  }
+
+  function renderCats(){
+    var c = state.cache;
+    catsEl.innerHTML = TABS.map(function(t){
+      var n = c[t.id] ? c[t.id].items.length : '';
+      return '<button class="cat" data-tab="' + t.id + '" aria-current="' +
+        (state.tab === t.id) + '"><span>' + t.name + '</span><span class="n">' +
+        (n || '') + '</span></button>';
+    }).join('');
+  }
+
+  function paintBars(feeds, ok, total, done){
+    done = done || 0;
+    var html = '';
+    for(var i=0;i<total;i++){
+      var cls = i < done ? (i < ok ? 'bar' : 'bar off') : 'bar load';
+      html += '<span class="' + cls + '" title="' + esc(FEED_LABEL[feeds[i]] || '') + '"></span>';
+    }
+    $('bars').innerHTML = html;
+    $('healthText').textContent = ok + '/' + total;
+    var cc = state.cache[state.tab];
+    if(cc && done >= cc.total) $('healthText').textContent = cc.ok + '/' + cc.total;
+  }
+
+  function paintStaticBars(){
+    var feeds = FEEDS[state.tab] || [];
+    paintBars(feeds, 0, feeds.length, 0);
+  }
+
+  function currentItems(){
+    var c = state.cache[state.tab];
+    if(!c) return [];
+    var q = state.query.toLowerCase().trim();
+    if(!q) return c.items;
+    return c.items.filter(function(it){
+      return (it.title + ' ' + it.source + ' ' + it.summary).toLowerCase().indexOf(q) !== -1;
+    });
+  }
+
+  function renderTicker(items){
+    var top = items.slice(0, 10);
+    tickerEl.innerHTML = top.map(function(it){
+      return '<a class="tick' + (it.isNew ? ' new' : '') + '" href="' + esc(it.link) + '" target="_blank" rel="noopener">' +
+        '<span class="t">' + rel(it.date) + '</span>' +
+        '<span class="h">' + esc(it.title) + '</span>' +
+      '</a>';
+    }).join('') || '<span class="tick"><span class="h">Yayın bekleniyor…</span></span>';
+  }
+
+  function renderLead(items){
+    var wrap = $('leadWrap');
+    if(!items.length){ wrap.innerHTML = ''; return null; }
+
+    var fresh = items.filter(function(it){
+      return (Date.now() - it.date.getTime()) < 6 * 3600 * 1000;
+    });
+    var p = fresh.length ? fresh : items;
+    var lead = null;
+    for(var i=0;i<Math.min(p.length, 14);i++){
+      if(p[i].image){ lead = p[i]; break; }
+    }
+    if(!lead) lead = p[0];
+
+    var isBreaking = (Date.now() - lead.date.getTime()) < 20 * 60 * 1000;
+    var hasImg = !!lead.image;
+
+    wrap.innerHTML =
+      '<article class="lead' + (isBreaking ? ' breaking' : '') + (hasImg ? '' : ' plain') + '">' +
+        '<div>' +
+          (isBreaking ? '<div class="kicker"><span class="dot"></span>Son dakika · ' + rel(lead.date) + '</div>' : '') +
+          '<a href="' + esc(lead.link) + '" target="_blank" rel="noopener"><h2>' + esc(lead.title) + '</h2></a>' +
+          (lead.summary ? '<p class="sum">' + esc(lead.summary) + '</p>' : '') +
+          '<div class="meta"><span class="src">' + esc(lead.source) + '</span>' +
+          '<span>' + hhmm(lead.date) + '</span>' +
+          '<span>' + rel(lead.date) + '</span></div>' +
+        '</div>' +
+        (hasImg ? '<figure><img src="' + esc(lead.image) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentNode.style.display=\'none\'"></figure>' : '') +
+      '</article>';
+    return lead;
+  }
+
+  function render(){
+    var all = currentItems();
+    var lead = renderLead(all);
+    renderTicker(all);
+
+    var list = all.filter(function(it){ return !lead || it.k !== lead.k; });
+    var shown = list.slice(0, state.limit);
+
+    $('feedHead').hidden = !shown.length;
+    $('feedCount').textContent = list.length + ' başlık' + (state.query ? ' · "' + state.query + '"' : '');
+
+    feedEl.innerHTML = shown.map(function(it){
+      return '<li class="item' + (it.isNew ? ' is-new' : '') + '">' +
+        '<div class="time"><b>' + hhmm(it.date) + '</b>' + rel(it.date) + '</div>' +
+        '<div class="body">' +
+          '<div class="txt">' +
+            '<a href="' + esc(it.link) + '" target="_blank" rel="noopener"><h4>' + esc(it.title) + '</h4></a>' +
+            (it.summary && it.summary.length > 90 ? '<p>' + esc(it.summary) + '</p>' : '') +
+            '<div class="src"><span>' + esc(it.source) + '</span>' +
+            (it.isNew ? '<span class="tagnew">yeni</span>' : '') + '</div>' +
+          '</div>' +
+          (it.image ? '<img class="thumb" src="' + esc(it.image) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">' : '') +
+        '</div>' +
+      '</li>';
+    }).join('');
+
+    var mb = $('moreBtn');
+    if(list.length > state.limit){
+      mb.hidden = false;
+      mb.textContent = 'Daha fazla başlık (' + (list.length - state.limit) + ' tane daha)';
+    } else mb.hidden = true;
+
+    var tab = TABS.filter(function(t){ return t.id === state.tab; })[0];
+    $('title').textContent = tab ? tab.name : 'Akış';
+    $('desc').textContent = tab ? tab.desc : '';
+
+    var c = state.cache[state.tab];
+    if(c){
+      var srcCount = {};
+      c.items.forEach(function(it){ srcCount[it.source] = 1; });
+      $('counts').textContent = c.items.length + ' haber · ' +
+        Object.keys(srcCount).length + ' kaynak';
+      $('lastUp').textContent = 'son güncelleme ' + hhmm(c.at);
+    }
+
+    renderCats();
+
+    var st = $('states');
+    if(!all.length){
+      if(state.loading){
+        st.innerHTML = '';
+      } else if(!c || c.ok === 0){
+        st.innerHTML = '<div class="err"><h4>Hiçbir kaynağa ulaşılamadı</h4>' +
+          '<p>Tarayıcı haber kaynaklarına bağlanamadı. Bu genelde şu nedenlerden olur:</p>' +
+          '<ul><li>Sayfa çevrimdışı bir ortamda açık</li>' +
+          '<li>Araya giren proxy servisleri engellenmiş</li>' +
+          '<li>Kısa sürede çok istek atıldı ve geçici olarak sınırlandırıldı</li></ul>' +
+          '<p style="margin-top:12px">Birkaç saniye bekleyip <b>Yenile</b> düğmesine bas.</p></div>';
+      } else {
+        st.innerHTML = '<div class="empty"><h4>Bu bölümde başlık yok</h4>' +
+          '<p>Kaynaklar yanıt verdi ama bu bölüm için yeni başlık dönmedi. Başka bir bölüme geçmeyi ya da yenilemeyi dene.</p></div>';
+      }
+    } else if(!shown.length && state.query){
+      st.innerHTML = '<div class="empty"><h4>"' + esc(state.query) + '" için sonuç yok</h4>' +
+        '<p>Aramanı kısaltmayı ya da başka bir bölümde denemeyi dene.</p></div>';
+    } else {
+      st.innerHTML = '';
+    }
+
+    updateRing(60);
+  }
+
+  function showSkeleton(){
+    var rows = '';
+    for(var i=0;i<6;i++){
+      rows += '<div class="row"><div class="b t"></div><div class="body"><div class="b"></div><div class="b s"></div></div></div>';
+    }
+    $('states').innerHTML = '<div class="sk">' + rows + '</div>';
+  }
+
+  /* ============ SAYAÇ & SAAT ============ */
+  var CIRC = 2 * Math.PI * 15.5;
+  function updateRing(sec){
+    var el = $('ringVal');
+    var frac = Math.max(0, Math.min(1, sec / 60));
+    el.setAttribute('stroke-dashoffset', String(CIRC * (1 - frac)));
+  }
+  function tickClock(){
+    var d = new Date();
+    var p = function(n){ return n < 10 ? '0' + n : String(n); };
+    $('clock').innerHTML = p(d.getHours()) + ':' + p(d.getMinutes()) +
+      '<span class="sec">' + p(d.getSeconds()) + '</span>';
+  }
+
+  var cycleStart = Date.now();
+  setInterval(function(){
+    var elapsed = (Date.now() - cycleStart) / 1000;
+    var left = Math.max(0, Math.ceil(60 - elapsed));
+    $('cdNum').textContent = left;
+    updateRing(left);
+    if(left <= 0){
+      cycleStart = Date.now();
+      refresh(true);
+    }
+  }, 1000);
+
+  setInterval(tickClock, 1000);
+  tickClock();
+
+  /* ============ OLAYLAR ============ */
+  function refresh(silent){
+    if(state.loading && silent) return;
+    state.loading = true;
+    var btn = $('refreshBtn');
+    btn.disabled = true; btn.classList.add('spin');
+    $('liveText').textContent = 'güncelleniyor';
+    $('lastUp').textContent = 'güncelleniyor…';
+
+    load(state.tab).then(function(){
+      state.loading = false;
+      btn.disabled = false; btn.classList.remove('spin');
+      $('liveText').textContent = 'yayında';
+    });
+  }
+
+  catsEl.addEventListener('click', function(e){
+    var b = e.target.closest('.cat');
+    if(!b) return;
+    var tab = b.getAttribute('data-tab');
+    if(tab === state.tab) return;
+    state.tab = tab;
+    state.limit = 40;
+    state.query = '';
+    $('q').value = '';
+    window.scrollTo({top:0, behavior:'smooth'});
+    paintStaticBars();
+    renderCats();
+    if(state.cache[tab]) render();
+    else { showSkeleton(); refresh(true); }
+  });
+
+  $('refreshBtn').addEventListener('click', function(){ refresh(false); });
+
+  $('moreBtn').addEventListener('click', function(){
+    state.limit += 40;
+    render();
+  });
+
+  var qTimer = null;
+  $('q').addEventListener('input', function(e){
+    var v = e.target.value;
+    clearTimeout(qTimer);
+    qTimer = setTimeout(function(){
+      state.query = v;
+      state.limit = 40;
+      render();
+    }, 130);
+  });
+
+  document.addEventListener('keydown', function(e){
+    var tag = (e.target.tagName || '').toLowerCase();
+    if(tag === 'input' || tag === 'textarea'){
+      if(e.key === 'Escape'){ $('q').value=''; state.query=''; render(); e.target.blur(); }
+      return;
+    }
+    if(e.key === '/'){ e.preventDefault(); $('q').focus(); return; }
+    if(e.key === 'r' || e.key === 'R'){ refresh(false); return; }
+    var n = parseInt(e.key, 10);
+    if(n >= 1 && n <= TABS.length){
+      state.tab = TABS[n-1].id;
+      state.limit = 40; state.query = ''; $('q').value = '';
+      paintStaticBars();
+      if(state.cache[state.tab]) render(); else { showSkeleton(); refresh(true); }
+    }
+  });
+
+  document.addEventListener('visibilitychange', function(){
+    if(!document.hidden){
+      var c = state.cache[state.tab];
+      if(c && (Date.now() - c.at.getTime()) > 60000){ cycleStart = Date.now(); refresh(true); }
+      else render();
+    }
+  });
+
+  /* ============ BAŞLAT ============ */
+  renderCats();
+  paintStaticBars();
+  showSkeleton();
+  render();
+  refresh(true);
+})();
+</script>
+</body>
+</html>
